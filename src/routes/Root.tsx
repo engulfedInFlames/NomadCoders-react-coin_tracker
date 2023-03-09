@@ -17,6 +17,7 @@ ${reset}
   body {
     width:100vw;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    background-color: ${(props) => props.theme.bgColor};
   }
 `;
 
@@ -27,7 +28,6 @@ function Root() {
         <GlobalyStyle />
         <Outlet />
       </ThemeProvider>
-      ;
     </>
   );
 }
