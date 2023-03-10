@@ -1,18 +1,21 @@
 import { useEffect, useState } from "react";
+import { useQuery } from "react-query";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { isPropertySignature } from "typescript";
+import { fetchCoins } from "./Fetchs";
 
 interface ICoin {
   id: string;
   name: string;
   symbol: string;
   rank: number;
-  quotes: {
-    USD: {
-      price: number;
-    };
-  };
 }
+
+const Loader = styled.span`
+  font-style: italic;
+  font-size: 32px;
+  text-align: center;
+`;
 
 const Title = styled.h1`
   width: 80%;
@@ -24,24 +27,25 @@ const Title = styled.h1`
 `;
 
 const Board = styled.div`
+  width: 80%;
   display: grid;
   grid-auto-flow: row;
-  grid-auto-rows: 56px;
   gap: 12px;
   justify-content: center;
-  width: 60%;
   margin: 0 auto;
 `;
 
 const Coin = styled.div`
+  cursor: pointer;
+  width: 440px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   background-color: ${(props) => props.theme.itemBgColor};
   color: ${(props) => props.theme.textColor};
-  font-size: 26px;
+  font-size: 24px;
   border-radius: 8px;
-  padding: 0 8px;
+  padding: 12px 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.24);
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   img {
@@ -53,31 +57,44 @@ const Coin = styled.div`
 `;
 
 const Coins = () => {
-  const [allCoins, setAllCoins] = useState([]);
-  const fetchCoins = async () => {
-    const coins = await (
-      await fetch("https://api.coinpaprika.com/v1/tickers")
-    ).json();
-    setAllCoins(coins.slice(0, 100));
-    console.log(allCoins);
-  };
-  useEffect(() => {
-    fetchCoins();
-  }, []);
+  const { isLoading, data: allCoins } = useQuery<ICoin[]>(
+    ["allCoins"],
+    fetchCoins,
+    {
+      refetchOnWindowFocus: false,
+      onSuccess: () => {
+        console.log("Success to get data!");
+      },
+      select: (data) => data.slice(0, 50),
+    }
+  );
 
   return (
     <>
       <Title>Blazed Coin Tracker</Title>
       <Board>
-        {allCoins.map((coin) => (
-          <Coin>
-            <img
-              src={`https://cryptocurrencyliveprices.com/img/${coin["id"]}.png`}
-            />
-            <span>{coin["name"]}</span>
-            <span>{coin["symbol"]}</span>
-          </Coin>
-        ))}
+        {isLoading ? (
+          <Loader>Loading...</Loader>
+        ) : (
+          allCoins?.map((coin) => (
+            <Link
+              key={coin.id}
+              to={`/${coin.id}`}
+              state={{
+                coinName: coin.name,
+                coinSymbol: coin.symbol,
+              }}
+            >
+              <Coin>
+                <img
+                  src={`https://cryptocurrencyliveprices.com/img/${coin["id"]}.png`}
+                />
+                <span>{coin["name"]}</span>
+                <span>{coin["symbol"]}</span>
+              </Coin>
+            </Link>
+          ))
+        )}
       </Board>
     </>
   );
