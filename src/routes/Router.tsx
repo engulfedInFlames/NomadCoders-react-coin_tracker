@@ -1,8 +1,10 @@
 import { createBrowserRouter } from "react-router-dom";
-import { PageNotFound } from "../components/NotFound";
+import { ComponentNotFound, PageNotFound } from "../components/NotFound";
 import Coin from "./Coin";
 import Coins from "./Coins";
 import Root from "./Root";
+import Chart from "./Chart";
+import Price from "./Price";
 
 const MyRouter = createBrowserRouter([
   {
@@ -17,6 +19,18 @@ const MyRouter = createBrowserRouter([
       {
         path: "/:coinId",
         element: <Coin />,
+        children: [
+          {
+            path: "chart",
+            element: <Chart />,
+            errorElement: <ComponentNotFound />,
+          },
+          {
+            path: "price",
+            element: <Price />,
+            errorElement: <ComponentNotFound />,
+          },
+        ],
         errorElement: <PageNotFound />,
       },
     ],

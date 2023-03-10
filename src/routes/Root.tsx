@@ -1,4 +1,3 @@
-import styled from "styled-components";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
 import { LightTheme } from "../css/theme";
 import reset from "styled-reset";
@@ -15,9 +14,11 @@ ${reset}
     color:inherit;
   }
   body {
-    width:100vw;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     background-color: ${(props) => props.theme.bgColor};
+  }
+  #root {
+    height:70vh;
   }
 `;
 

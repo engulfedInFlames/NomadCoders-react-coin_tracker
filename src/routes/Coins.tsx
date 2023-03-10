@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { fetchCoins } from "./Fetchs";
+import { fetchCoins } from "./Fetches";
 
 interface ICoin {
   id: string;
